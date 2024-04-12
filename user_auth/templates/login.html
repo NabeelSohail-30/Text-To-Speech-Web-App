@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login</title>
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        background-color: #f8f9fa;
+      }
+      .login-container {
+        max-width: 400px;
+        margin: 240px auto;
+        padding: 40px 20px;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+      .login-container h1 {
+        text-align: center;
+        margin-bottom: 30px;
+      }
+      .login-container form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 20px;
+        width: 100%;
+      }
+      .form-group {
+        margin-bottom: 20px;
+      }
+
+      .btn {
+        background-color: #5356ff;
+        color: white;
+        border: 1px solid #5356ff;
+        border-radius: 5px;
+        padding: 8px 10px;
+        transition: 0.5s;
+        text-decoration: none;
+        font-weight: 500;
+        width: 50%;
+      }
+
+      .btn-primary {
+        background-color: #007bff;
+        border-color: #007bff;
+      }
+      .btn-primary:hover {
+        background-color: #0056b3;
+        border-color: #0056b3;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6 mx-auto">
+          <div class="login-container">
+            <h1>Login</h1>
+            <form method="post">
+              {% csrf_token %}
+              <div class="form-group">
+                <div>{{ form.username.label_tag }}</div>
+                <div>{{ form.username }}</div>
+              </div>
+              <div class="form-group">
+                <div>{{ form.password.label_tag }}</div>
+                <div>{{ form.password }}</div>
+              </div>
+              <div class="form-group"></div>
+              <button type="submit" class="btn btn-primary">Login</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  </body>
+</html>

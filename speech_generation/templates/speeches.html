@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Speeches</title>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+  </head>
+  <style>
+    body {
+      background-color: #dff5ff;
+    }
+
+    header {
+      background-color: #5356ff;
+      color: white;
+      text-align: center;
+      padding: 10px;
+      padding-top: 20px;
+      font-size: 18px;
+    }
+
+    nav ul {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    nav ul li {
+      display: inline;
+      margin-right: 10px;
+    }
+
+    nav ul li a {
+      color: white;
+      text-decoration: none;
+      padding: 8px 10px;
+    }
+
+    nav ul li a:hover {
+      background-color: white;
+      color: #5356ff;
+      text-decoration: none;
+      border-radius: 5px;
+      padding: 8px 10px;
+      transition: 0.5s;
+    }
+
+    .app-heading {
+      margin-top: 50px;
+      text-align: center;
+      font-size: 30px;
+      font-weight: bold;
+      color: black;
+      text-decoration: none;
+      border-radius: 5px;
+      padding: 8px 10px;
+      transition: 0.5s;
+      margin-bottom: 20px;
+    }
+
+    .card-body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      text-align: center;
+      background-color: #378ce7;
+      border: 1px solid #5356ff;
+      border-radius: 0.25rem;
+      color: white;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    audio {
+      width: 50%;
+    }
+
+    .btn-white {
+      background-color: white;
+      color: #5356ff;
+      border: 1px solid #5356ff;
+      border-radius: 5px;
+      padding: 8px 10px;
+      transition: 0.5s;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .btn-white:hover {
+      background-color: #5356ff;
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+    }
+  </style>
+  <body>
+    <header>
+      <nav>
+        <ul>
+          <li><a href="{% url 'converter' %}">Home</a></li>
+          <li><a href="{% url 'display_speeches' %}">Speeches</a></li>
+          <li><a href="{% url 'data_dictionary' %}">Dictionary</a></li>
+          <li><a href="{% url 'custom_logout_view' %}">Logout</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <div class="app-heading">
+      <h1>Speeches</h1>
+    </div>
+
+    <div class="container">
+      <div class="row">
+        {% for speech in speeches %}
+        <div class="col-12 mb-4">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Speech {{ forloop.counter }}</h5>
+              <p class="card-text">{{ speech.text }}</p>
+              <audio controls>
+                <source
+                  src="{% url 'speech_file' speech.audio_file.name %}"
+                  type="audio/mpeg"
+                />
+                Your browser does not support the audio element.
+              </audio>
+              <br />
+              <a
+                href="{{ speech.audio_file.url }}"
+                download="{{ speech.audio_file.name }}"
+                class="btn btn-white"
+                >Download</a
+              >
+            </div>
+          </div>
+        </div>
+        {% empty %}
+        <div class="col-md-12">
+          <p>No speeches available.</p>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </body>
+</html>

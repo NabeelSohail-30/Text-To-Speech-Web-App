@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+  </head>
+
+  <style>
+    body {
+      background-color: #dff5ff;
+    }
+
+    header {
+      background-color: #5356ff;
+      color: white;
+      text-align: center;
+      padding: 10px;
+      padding-top: 20px;
+      font-size: 18px;
+    }
+
+    nav ul {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    nav ul li {
+      display: inline;
+      margin-right: 10px;
+    }
+
+    nav ul li a {
+      color: white;
+      text-decoration: none;
+      padding: 8px 10px;
+    }
+
+    nav ul li a:hover {
+      background-color: white;
+      color: #5356ff;
+      text-decoration: none;
+      border-radius: 5px;
+      padding: 8px 10px;
+      transition: 0.5s;
+    }
+
+    .app-heading {
+      margin-top: 50px;
+      text-align: center;
+      font-size: 30px;
+      font-weight: bold;
+      color: black;
+      text-decoration: none;
+      border-radius: 5px;
+      padding: 8px 10px;
+      transition: 0.5s;
+      margin-bottom: 20px;
+    }
+
+    .container {
+      margin: 0 auto;
+      padding: 20px;
+      max-width: 800px;
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn {
+      background-color: #5356ff;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      width: 50%;
+    }
+
+    .table-container {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+      margin-bottom: 20px;
+    }
+
+    table {
+      width: 50%;
+      border-collapse: collapse;
+    }
+
+    th {
+      background-color: #5356ff;
+      color: white;
+      font-weight: bold;
+    }
+
+    th,
+    td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: center;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+
+    tr:nth-child(odd) {
+      background-color: #fff;
+    }
+
+    tr:hover {
+      background-color: #378ce7;
+    }
+
+    a {
+      color: #5356ff;
+      text-decoration: none;
+    }
+
+    a:hover {
+      color: #5356ff;
+      text-decoration: underline;
+    }
+  </style>
+  <body>
+    <header>
+      <nav>
+        <ul>
+          <li><a href="{% url 'converter' %}">Home</a></li>
+          <li><a href="{% url 'display_speeches' %}">Speeches</a></li>
+          <li><a href="{% url 'data_dictionary' %}">Dictionary</a></li>
+          <li><a href="{% url 'custom_logout_view' %}">Logout</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <div class="app-heading">
+      <h1>Data Dictionary</h1>
+    </div>
+
+    <div class="container">
+      <form method="post">
+        <div class="row">
+          <div class="col">{% csrf_token %} {{ form.as_p }}</div>
+        </div>
+        <div class="row">
+          <div class="col d-flex justify-content-center">
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Actual Word</th>
+            <th>Replaced Word</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for entry in entries %}
+          <tr>
+            <td>{{ entry.actual_word }}</td>
+            <td>{{ entry.replaced_word }}</td>
+            <td>
+              <a href="#">Edit</a>
+              <a href="#">Delete</a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Speech Converter</title>
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+  </head>
+
+  <style>
+    body {
+      background-color: #dff5ff;
+    }
+
+    header {
+      background-color: #5356ff;
+      color: white;
+      text-align: center;
+      padding: 10px;
+      padding-top: 20px;
+      font-size: 18px;
+    }
+
+    nav ul {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    nav ul li {
+      display: inline;
+      margin-right: 10px;
+    }
+
+    nav ul li a {
+      color: white;
+      text-decoration: none;
+      padding: 8px 10px;
+    }
+
+    nav ul li a:hover {
+      background-color: white;
+      color: #5356ff;
+      text-decoration: none;
+      border-radius: 5px;
+      padding: 8px 10px;
+      transition: 0.5s;
+    }
+
+    .app-heading {
+      margin-top: 50px;
+      text-align: center;
+      font-size: 30px;
+      font-weight: bold;
+      color: black;
+      text-decoration: none;
+      border-radius: 5px;
+      padding: 8px 10px;
+      transition: 0.5s;
+      margin-bottom: 20px;
+    }
+
+    .container {
+      margin: 0 auto;
+      padding: 20px;
+      max-width: 800px;
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+  </style>
+
+  <body>
+    <header>
+      <nav>
+        <ul>
+          <li><a href="{% url 'converter' %}">Home</a></li>
+          <li><a href="{% url 'display_speeches' %}">Speeches</a></li>
+          <li><a href="{% url 'data_dictionary' %}">Dictionary</a></li>
+          <li><a href="{% url 'custom_logout_view' %}">Logout</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <div class="app-heading">
+      <h1>Speech Generator</h1>
+    </div>
+
+    {% csrf_token %}
+
+    <div class="container">
+      <div class="row">
+        <div class="col-12">
+          <textarea
+            id="inputText"
+            rows="10"
+            cols="100"
+            placeholder="Enter your text here"
+            class="form-control"
+          ></textarea>
+        </div>
+      </div>
+      <div class="row mt-3">
+        <div class="col-12">
+          <button
+            class="btn btn-primary btn-block"
+            onclick="generateSpeech()"
+            style="margin-top: 10px"
+          >
+            Generate Speech
+          </button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12">
+          <p id="message" style="margin-top: 10px"></p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12">
+          <p id="processing" style="display: none; margin-top: 10px">
+            Processing...
+          </p>
+        </div>
+      </div>
+    </div>
+  </body>
+
+  <script>
+    function getCookie(name) {
+      var cookieValue = null;
+      if (document.cookie && document.cookie !== "") {
+        var cookies = document.cookie.split(";");
+        for (var i = 0; i < cookies.length; i++) {
+          var cookie = cookies[i].trim();
+          if (cookie.substring(0, name.length + 1) === name + "=") {
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            break;
+          }
+        }
+      }
+      return cookieValue;
+    }
+
+    function generateSpeech() {
+      var text = document.getElementById("inputText").value;
+      document.getElementById("processing").style.display = "block";
+      var xhr = new XMLHttpRequest();
+      xhr.open("POST", "/generate_speech", true);
+      xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+      // Include CSRF token in headers
+      xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));
+      xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4) {
+          document.getElementById("processing").style.display = "none";
+          if (xhr.status === 200) {
+            var response = JSON.parse(xhr.responseText);
+            if (response.status === "success") {
+              document.getElementById("message").innerText =
+                "Speech generated successfully. Audio saved at " +
+                response.audio_path;
+            } else {
+              document.getElementById("message").innerText =
+                "Error: " + response.message;
+            }
+          } else {
+            document.getElementById("message").innerText =
+              "Error: Something went wrong.";
+          }
+        }
+      };
+      xhr.send("text=" + text);
+    }
+  </script>
+</html>
