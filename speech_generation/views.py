@@ -7,6 +7,8 @@ from datetime import datetime
 from .models import Speech
 from django.http import FileResponse
 from django.conf import settings
+from elevenlabs.client import ElevenLabs
+from elevenlabs import play, stream, save
 
 # Create your views here.
 
@@ -28,6 +30,38 @@ def generate_speech(request):
             audio_path = os.path.join('media', audio_filename)
 
             tts.save(audio_path)
+
+            # Save speech to database
+            speech = Speech.objects.create(text=text, audio_file=audio_path)
+
+            return JsonResponse({'status': 'success', 'audio_path': audio_path})
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': str(e)})
+    return JsonResponse({'status': 'error', 'message': 'Method not allowed'})
+
+
+@login_required
+def generate_speech_eleven(request):
+    if request.method == 'POST':
+        text = request.POST.get('text')
+        try:
+            API_KEY = '9e4c1a441eb0c16ff2557d8931d387d4'
+
+            client = ElevenLabs(
+                api_key=API_KEY
+            )
+
+            audio = client.generate(
+                text=text,
+                voice="Daniel",
+                model="eleven_multilingual_v2"
+            )
+
+            # Define path to save audio
+            audio_filename = f'{datetime.now().strftime("%Y%m%d%H%M%S")}.mp3'
+            audio_path = os.path.join('media', audio_filename)
+
+            save(audio, audio_path)
 
             # Save speech to database
             speech = Speech.objects.create(text=text, audio_file=audio_path)
