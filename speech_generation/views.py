@@ -9,6 +9,7 @@ from django.http import FileResponse
 from django.conf import settings
 from elevenlabs.client import ElevenLabs
 from elevenlabs import play, stream, save
+from dotenv import load_dotenv
 
 # Create your views here.
 
@@ -27,7 +28,7 @@ def generate_speech(request):
             tts = gTTS(text)
             # Define path to save audio
             audio_filename = f'{datetime.now().strftime("%Y%m%d%H%M%S")}.mp3'
-            audio_path = os.path.join('media', audio_filename)
+            audio_path = os.path.join('media/gtts_media', audio_filename)
 
             tts.save(audio_path)
 
@@ -45,7 +46,9 @@ def generate_speech_eleven(request):
     if request.method == 'POST':
         text = request.POST.get('text')
         try:
-            API_KEY = '9e4c1a441eb0c16ff2557d8931d387d4'
+            load_dotenv()
+
+            API_KEY = os.getenv('ELEVENLABS_API_KEY')
 
             client = ElevenLabs(
                 api_key=API_KEY
@@ -59,7 +62,7 @@ def generate_speech_eleven(request):
 
             # Define path to save audio
             audio_filename = f'{datetime.now().strftime("%Y%m%d%H%M%S")}.mp3'
-            audio_path = os.path.join('media', audio_filename)
+            audio_path = os.path.join('media/elevenlabs_media', audio_filename)
 
             save(audio, audio_path)
 
