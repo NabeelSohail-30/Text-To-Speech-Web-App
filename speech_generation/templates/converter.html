@@ -113,7 +113,14 @@
             onclick="generateSpeech()"
             style="margin-top: 10px"
           >
-            Generate Speech
+            Generate GTTS Speech
+          </button>
+          <button
+            class="btn btn-primary btn-block"
+            onclick="generateSpeechv2()"
+            style="margin-top: 10px"
+          >
+            Generate ElevenLabs Speech
           </button>
         </div>
       </div>
@@ -153,6 +160,36 @@
       document.getElementById("processing").style.display = "block";
       var xhr = new XMLHttpRequest();
       xhr.open("POST", "/generate_speech", true);
+      xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+      // Include CSRF token in headers
+      xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));
+      xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4) {
+          document.getElementById("processing").style.display = "none";
+          if (xhr.status === 200) {
+            var response = JSON.parse(xhr.responseText);
+            if (response.status === "success") {
+              document.getElementById("message").innerText =
+                "Speech generated successfully. Audio saved at " +
+                response.audio_path;
+            } else {
+              document.getElementById("message").innerText =
+                "Error: " + response.message;
+            }
+          } else {
+            document.getElementById("message").innerText =
+              "Error: Something went wrong.";
+          }
+        }
+      };
+      xhr.send("text=" + text);
+    }
+
+    function generateSpeechv2() {
+      var text = document.getElementById("inputText").value;
+      document.getElementById("processing").style.display = "block";
+      var xhr = new XMLHttpRequest();
+      xhr.open("POST", "/generate_speech_eleven", true);
       xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
       // Include CSRF token in headers
       xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));
