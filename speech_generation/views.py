@@ -82,5 +82,5 @@ def serve_audio_file(request, path):
 
 @login_required
 def display_speeches(request):
-    speeches = Speech.objects.all()
+    speeches = Speech.objects.all().order_by('-id')
     return render(request, 'speeches.html', {'speeches': speeches})
