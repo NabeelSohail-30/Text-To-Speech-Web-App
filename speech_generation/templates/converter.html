@@ -101,9 +101,11 @@
             id="inputText"
             rows="10"
             cols="100"
-            placeholder="Enter your text here"
+            placeholder="Enter your text here (max 800 characters)"
             class="form-control"
+            oninput="countCharacters()"
           ></textarea>
+          <p id="charCount">Characters remaining: 8000</p>
         </div>
       </div>
       <div class="row mt-3">
@@ -140,6 +142,13 @@
   </body>
 
   <script>
+    function countCharacters() {
+      var text = document.getElementById("inputText").value;
+      var remaining = 8000 - text.length;
+      document.getElementById("charCount").innerText =
+        "Characters remaining: " + remaining;
+    }
+
     function getCookie(name) {
       var cookieValue = null;
       if (document.cookie && document.cookie !== "") {
@@ -193,6 +202,7 @@
       xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
       // Include CSRF token in headers
       xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));
+      xhr.timeout = 60000;
       xhr.onreadystatechange = function () {
         if (xhr.readyState === 4) {
           document.getElementById("processing").style.display = "none";
