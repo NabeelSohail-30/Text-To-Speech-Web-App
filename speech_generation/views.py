@@ -7,9 +7,10 @@ from datetime import datetime
 from .models import Speech
 from django.http import FileResponse
 from django.conf import settings
-from elevenlabs.client import ElevenLabs
-from elevenlabs import play, stream, save
+from elevenlabs.client import ElevenLabs, AsyncElevenLabs
+from elevenlabs import play, stream, save, Voice, VoiceSettings
 from dotenv import load_dotenv
+import asyncio
 
 # Create your views here.
 
@@ -48,7 +49,7 @@ def generate_speech_eleven(request):
         try:
             load_dotenv()
 
-            API_KEY = os.getenv('ELEVENLABS_API_KEY')
+            # API_KEY = os.getenv('ELEVENLABS_API_KEY')
 
             client = ElevenLabs(
                 api_key=API_KEY
@@ -56,7 +57,10 @@ def generate_speech_eleven(request):
 
             audio = client.generate(
                 text=text,
-                voice="Daniel",
+                voice=Voice(
+                    voice_id="onwK4e9ZLuTAKqWW03F9",
+                    name="Eleven Multilingual v2",
+                    settings=VoiceSettings(stability=0.90, similarity_boost=0.8, style=0.0, use_speaker_boost=True)),
                 model="eleven_multilingual_v2"
             )
 
@@ -75,12 +79,12 @@ def generate_speech_eleven(request):
     return JsonResponse({'status': 'error', 'message': 'Method not allowed'})
 
 
-@login_required
+@ login_required
 def serve_audio_file(request, path):
     return FileResponse(open(path, 'rb'), content_type='audio/mpeg')
 
 
-@login_required
+@ login_required
 def display_speeches(request):
     speeches = Speech.objects.all().order_by('-id')
     return render(request, 'speeches.html', {'speeches': speeches})
