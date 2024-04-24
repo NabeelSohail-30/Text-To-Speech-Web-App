@@ -7,7 +7,7 @@ from .forms import DataEntryForm
 
 @login_required
 def data_dictionary(request):
-    entries = DataEntry.objects.all()
+    entries = DataEntry.objects.all().order_by('-id')
     form = DataEntryForm()
     if request.method == 'POST':
         form = DataEntryForm(request.POST)
