@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'user_auth',
     'speech_generation',
     'data_dictionary',
+    'merge_audios'
 ]
 
 MIDDLEWARE = [
