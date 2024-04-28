@@ -21,6 +21,7 @@ from django.contrib.auth.views import LoginView, LogoutView
 from speech_generation.views import converter_view, generate_speech, display_speeches, serve_audio_file, generate_speech_eleven
 from user_auth.views import custom_logout_view, custom_logout_page
 from data_dictionary.views import data_dictionary
+from merge_audios.views import upload_audio
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -34,5 +35,6 @@ urlpatterns = [
          name='generate_speech_eleven'),
     path('speeches', display_speeches, name='display_speeches'),
     path('data_dictionary', data_dictionary, name='data_dictionary'),
+    path('upload_audio', upload_audio, name='upload_audio'),
     path('<path:path>', serve_audio_file, name='speech_file'),
 ]
