@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Upload Audio Files</title>
+    <style>
+      #file-list {
+        list-style-type: none;
+        padding: 0;
+      }
+      .file-item {
+        margin-bottom: 10px;
+        padding: 10px;
+        background-color: #f2f2f2;
+      }
+      .drag-over {
+        border: 2px dashed #aaa;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Upload Audio Files</h2>
+    <div id="drop-area" class="file-item">
+      Drag and drop your files here, or click to select files.
+    </div>
+    <ul id="file-list"></ul>
+
+    <form
+      id="upload-form"
+      method="post"
+      enctype="multipart/form-data"
+      style="display: none"
+    >
+      {% csrf_token %}
+      <input type="file" name="files" id="file-input" multiple />
+      <button type="submit">Upload</button>
+    </form>
+
+    <script>
+      const dropArea = document.getElementById("drop-area");
+      const fileList = document.getElementById("file-list");
+      const uploadForm = document.getElementById("upload-form");
+      const fileInput = document.getElementById("file-input");
+
+      // Prevent default drag behaviors
+      ["dragenter", "dragover", "dragleave", "drop"].forEach((eventName) => {
+        dropArea.addEventListener(eventName, preventDefaults, false);
+        document.body.addEventListener(eventName, preventDefaults, false);
+      });
+
+      // Highlight drop area when a file is dragged over it
+      ["dragenter", "dragover"].forEach((eventName) => {
+        dropArea.addEventListener(eventName, highlight, false);
+      });
+
+      // Unhighlight drop area when a file is dragged out of it
+      ["dragleave", "drop"].forEach((eventName) => {
+        dropArea.addEventListener(eventName, unhighlight, false);
+      });
+
+      // Handle dropped files
+      dropArea.addEventListener("drop", handleDrop, false);
+
+      function preventDefaults(e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+
+      function highlight() {
+        dropArea.classList.add("drag-over");
+      }
+
+      function unhighlight() {
+        dropArea.classList.remove("drag-over");
+      }
+
+      function handleDrop(e) {
+        const dt = e.dataTransfer;
+        const files = dt.files;
+
+        handleFiles(files);
+      }
+
+      function handleFiles(files) {
+        files = [...files];
+        files.forEach(uploadFile);
+      }
+
+      function uploadFile(file) {
+        const li = document.createElement("li");
+        li.textContent = file.name;
+        fileList.appendChild(li);
+      }
+
+      // Show upload form when files are dropped or selected
+      ["dragenter", "dragover", "click"].forEach((eventName) => {
+        dropArea.addEventListener(eventName, showUploadForm, false);
+      });
+
+      function showUploadForm() {
+        uploadForm.style.display = "block";
+      }
+
+      // Allow user to change sequence of files by dragging
+      let draggedItem = null;
+
+      fileList.addEventListener(
+        "dragstart",
+        function (e) {
+          draggedItem = e.target;
+          e.dataTransfer.effectAllowed = "move";
+          e.dataTransfer.setData("text/html", draggedItem);
+        },
+        false
+      );
+
+      fileList.addEventListener(
+        "dragover",
+        function (e) {
+          e.preventDefault();
+          e.dataTransfer.dropEffect = "move";
+          return false;
+        },
+        false
+      );
+
+      fileList.addEventListener(
+        "drop",
+        function (e) {
+          if (e.target.classList.contains("file-item")) {
+            e.target.parentNode.insertBefore(draggedItem, e.target.nextSibling);
+          } else {
+            e.target.parentNode.insertBefore(draggedItem, e.target);
+          }
+          e.preventDefault();
+        },
+        false
+      );
+    </script>
+  </body>
+</html>
