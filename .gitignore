@@ -61,3 +61,6 @@ myenv/
 !.vscode/launch.json 
 !.vscode/extensions.json 
 .history
+
+media/
+merged_media/
